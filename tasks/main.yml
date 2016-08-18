@@ -24,6 +24,15 @@
   notify: 
   - restart fastd
 
+- name: Create secret-file
+  command: echo "secret \"$(fastd --generate-key --machine-readable)\";" > /etc/fastd/{{ fastd_interface }}/secret
+  args:
+    creates: /etc/fastd/{{ fastd_interface }}/secret
+
+- name: Update fastd secret (if defined)
+  when: fastd_secret
+  lineinfile: dest=/etc/fastd/{{ fastd_interface }}/secret regexp='^secret' line='secret "{{ fastd_secret }}";'
+
 - name: peers_dirs
   file: >
     path="/etc/fastd/{{ fastd_interface }}/{{ item.value.peers_dir }}"

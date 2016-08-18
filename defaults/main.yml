@@ -7,6 +7,9 @@ fastd_hide_mac: 'yes'
 fastd_syslog_level: 'info'
 fastd_methods:
 - 'salsa2012+umac'
+- 'null'
+fastd_bind:
+- '0.0.0.0:10000'
 fastd_mode: 'tap'
 fastd_mtu: 1426
 fastd_pmtu: 'auto'
@@ -14,4 +17,7 @@ fastd_repository_key: '6664E7BDA6B669881EC52E7516EF3F64CB201D9C'
 fastd_secure_handshakes: 'yes'
 fastd_status_socket: '/var/log/fastd_status'
 pgp_keyserver: 'pool.sks-keyservers.net'
-
+fastd_interface: 'fastd-exit'
+fastd_interface_ipv6: 'fe80::1'
+fastd_interface_ipv4: '172.26.0.1'
+fastd_interface_ipv4: '255.255.224.0'

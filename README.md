@@ -3,23 +3,30 @@ fastd
 
 This role installs and configures fastd, the Fast and Secure Tunnelling Daemon.
 
+It is used to provide an Internet-Exit for VPN nodes.
+
+Please note, that neither any dhcp, nor any radvd configuration is provided by this role - it's the fastd-Stuff only
+
+This role also creates an interface at /etc/network/interfaces.d/$fastd_interface to configure the interface using a static configuration.
+
 Role Variables
 --------------
 
 See: http://fastd.readthedocs.org/en/v16/manual/config.html
 
-    fastd_bind:
-    - address: ipv4 / ipv6 address
-      port: Port (1-65535)
-      interface: interface to bind to
+    fastd_bind: (List of bindings - default: '0.0.0.0:10000'
     fastd_drop_capabilities: (default: yes)
     fastd_forward: (default: no)
     fastd_hide_ip: (default: yes)
     fastd_hide_mac: (default: yes)
-    fastd_interface: name of the VPN-interface
+    fastd_interface: name of the VPN-interface (default: fastd-exit)
+    fastd_interface_ipv6: IPv6-Address of the interface (default: fe80::1)
+    fastd_interface_ipv4: IPv4-Address of the interface (default: 172.26.0.1)
+    fastd_interface_ipv4: IPv4-Subnetmask of the interface (default 255.255.224.0)
     fastd_syslog_level: (default: info)
     fastd_methods: see http://fastd.readthedocs.org/en/v16/manual/methods.html
     - 'salsa2012+umac' (default)
+    - 'null' (default)
     fastd_mode: (default: tap)
     fastd_mtu: (default: 1426)
     fastd_on_pre_up:
@@ -52,25 +59,11 @@ See: http://fastd.readthedocs.org/en/v16/manual/config.html
         peers_dir: '[dirname]'
         peers_limit: maximum number of peers to connect to
     fastd_repository_key: (default: '6664E7BDA6B669881EC52E7516EF3F64CB201D9C')
-    fastd_secret: fastd private key (mandatory)
+    fastd_secret: fastd private key (default: will be generated)
     fastd_secure_handshakes: (default: yes)
     fastd_status_socket: (default: '/tmp/fastd_status')
     pgp_keyserver: (default: 'pool.sks-keyservers.net')
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      vars:
-        fastd_bind:
-        - address: '0.0.0.0'
-          port: 10000
-        fastd_interface: 'fastd-vpn'
-        fastd_secret: '[key]'
-      roles:
-      - fastd
 
 License
 -------
