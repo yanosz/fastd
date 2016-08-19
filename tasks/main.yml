@@ -2,11 +2,10 @@
 - name: Add repository-gpg-key for fastd
   apt_key: "keyserver={{ pgp_keyserver }} id={{ fastd_repository_key }}"
 
-- name: add universe-factory and wheezy-backports repositories for fastd
+- name: add universe-factory repository for fastd
   apt_repository: repo="{{ item }}" update_cache=yes
   with_items:
   - 'deb http://repo.universe-factory.net/debian/ sid main'
-  - 'deb http://ftp.debian.org/debian/ wheezy-backports main'
 
 - name: install fastd
   apt: name=fastd state=present
@@ -25,18 +24,19 @@
   - restart fastd
 
 - name: Create secret-file
-  command: echo "secret \"$(fastd --generate-key --machine-readable)\";" > /etc/fastd/{{ fastd_interface }}/secret
+  shell: echo "secret \"$(fastd --generate-key --machine-readable)\";" > /etc/fastd/{{ fastd_interface }}/secret && chmod 600 /etc/fastd/{{ fastd_interface }}/secret
   args:
-    creates: /etc/fastd/{{ fastd_interface }}/secret
+    creates: "/etc/fastd/{{ fastd_interface }}/secret"
 
 - name: Update fastd secret (if defined)
-  when: fastd_secret
+  when: fastd_secret != 'generate'
   lineinfile: dest=/etc/fastd/{{ fastd_interface }}/secret regexp='^secret' line='secret "{{ fastd_secret }}";'
-
-- name: peers_dirs
-  file: >
-    path="/etc/fastd/{{ fastd_interface }}/{{ item.value.peers_dir }}"
-    state=directory
-  with_dict: fastd_peers
   notify:
   - restart fastd
+
+- name: Create fastd peer directory
+  file: path=/etc/fastd/{{ fastd_interface }}/peers state=directory
+
+- name: Verify configuration
+  shell: fastd --verify-config -c /etc/fastd/{{ fastd_interface }}/fastd.conf
+
