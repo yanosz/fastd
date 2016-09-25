@@ -19,9 +19,6 @@ See: http://fastd.readthedocs.org/en/v16/manual/config.html
     fastd_hide_ip: (default: yes)
     fastd_hide_mac: (default: yes)
     fastd_interface: name of the VPN-interface (default: fastd-exit)
-    fastd_interface_ipv6: IPv6-Address of the interface (default: fe80::1)
-    fastd_interface_ipv4: IPv4-Address of the interface (default: 172.26.0.1)
-    fastd_interface_ipv4: IPv4-Subnetmask of the interface (default 255.255.224.0)
     fastd_syslog_level: (default: info)
     fastd_methods: see http://fastd.readthedocs.org/en/v16/manual/methods.html
     - 'salsa2012+umac' (default)
